@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "name": "SENAP Móvil",
+    "slug": "senap-movil",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "scheme": "senap-movil",
+    "platforms": ["android", "ios", "web"],
+    "plugins": ["expo-router"]
+  }
+}
