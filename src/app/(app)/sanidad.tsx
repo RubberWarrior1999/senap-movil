@@ -1,12 +1,14 @@
 import { useState } from 'react';
+import { useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { Action, Badge, Card, Chips, Icon, Screen, SectionTitle, Sheet, styles as ui } from '../components/ui';
-import { useDemo } from '../services/DemoProvider';
-import { color } from '../theme';
+import { Action, Badge, Card, Chips, Icon, Screen, SectionTitle, Sheet, styles as ui } from '../../components/ui';
+import { useDemo } from '../../services/DemoProvider';
+import { color } from '../../theme';
 
 const filters = ['Todos', 'Pendientes', 'Realizados'] as const;
 
 export default function HealthScreen() {
+  const router = useRouter();
   const { health, completeHealth } = useDemo();
   const [filter, setFilter] = useState<typeof filters[number]>('Todos');
   const [selectedId, setSelectedId] = useState<string>();
@@ -14,7 +16,7 @@ export default function HealthScreen() {
   const selected = health.find(item => item.id === selectedId);
   const visible = health.filter(item => filter === 'Todos' || item.done === (filter === 'Realizados'));
 
-  return <Screen title="Sanidad" intro="Organiza los controles y el seguimiento del rebaño.">
+  return <Screen title="Sanidad" intro="Organiza los controles y el seguimiento del rebaño." onBack={() => router.navigate('/')}>
     <View style={styles.summary}>
       <View style={styles.iconBox}><Icon name="health" /></View>
       <View style={styles.summaryText}><Text style={ui.sectionTitle}>{pending} {pending === 1 ? 'control pendiente' : 'controles pendientes'}</Text>
@@ -46,7 +48,7 @@ export default function HealthScreen() {
 }
 
 const styles = StyleSheet.create({
-  summary: { flexDirection: 'row', alignItems: 'center', gap: 12, borderRadius: 18, backgroundColor: color.amber, padding: 14, marginBottom: 14 },
+  summary: { flexDirection: 'row', alignItems: 'center', gap: 12, borderRadius: 18, backgroundColor: color.soft, padding: 14, marginBottom: 14 },
   iconBox: { width: 43, height: 43, borderRadius: 13, backgroundColor: color.surface, alignItems: 'center', justifyContent: 'center' },
   summaryText: { flex: 1, gap: 5 },
   list: { gap: 8 },

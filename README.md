@@ -1,18 +1,28 @@
 # SENAP Móvil
 
-Prototipo de frontend para Electiva III. Usa React Native, Expo SDK 57 y Expo Router con el mismo código para Android e iOS. Incluye una vista web para ensayar la exposición.
+Prototipo de interfaz para Electiva III. Usa React Native, Expo SDK 57, Expo Router y TypeScript. Incluye una vista web para ensayar la exposición.
 
-## Cinco vistas
+## Recorridos de la evaluación
 
 | Vista | Interacción |
 | --- | --- |
-| Inicio | Resume ganado, controles sanitarios, leche y tareas. Los indicadores se actualizan al cambiar datos en otras vistas. |
-| Ganado | Busca por nombre, código, raza o potrero. Filtra por estado y abre la ficha del animal. |
-| Sanidad | Filtra controles, consulta su detalle y marca un control como realizado. |
-| Producción | Registra o actualiza litros por animal y turno. Valida la cantidad y recalcula el gráfico y el total. |
-| Jornadas | Filtra tareas, marca o desmarca su cumplimiento y muestra el avance de la jornada. |
+| Login | Accede con una cuenta activa de ejemplo. Al cerrar sesión, las pantallas principales vuelven a exigir acceso. |
+| Recuperación | Verifica correo y código de prueba, confirma una nueva contraseña y úsala para ingresar durante la misma ejecución. |
+| Dashboard | Muestra animales activos, litros del día, usuarios activos para el administrador y accesos a los módulos. |
+| Usuarios | Busca y filtra cuentas. Registra, edita y elimina con validaciones, roles, estados y confirmación dentro de la app. |
+| Animales | Busca por nombre, código, raza o lote. Filtra por estado y abre, crea o edita fichas. |
+| Producción de leche | Registra ordeños de hembras activas, consulta litros por animal y período, revisa el gráfico semanal y elimina con confirmación. |
 
-Los datos son ficticios. Se mantienen en memoria al navegar y regresan a su estado inicial al recargar la app. En esta entrega el frontend funciona sin XAMPP, base de datos ni conexión a una API.
+Sanidad y Jornadas siguen accesibles desde el Dashboard. El tema azul y blanco aplica a todos los recorridos.
+
+Los datos, permisos y credenciales son ficticios. Se conservan en memoria al navegar y vuelven al estado inicial al recargar la app. La recuperación usa el código de demostración mostrado en pantalla. Todo el recorrido funciona sin XAMPP, base de datos, correo ni API.
+
+| Cuenta de prueba | Usuario | Contraseña inicial |
+| --- | --- | --- |
+| Administradora | `admin.demo` | `SenapDemo21` |
+| Campo, con acceso limitado | `campo.demo` | `CampoDemo21` |
+
+Para recuperar la primera cuenta, usa `admin@senap.test` y el código ficticio `482615`.
 
 ## Arranque en Windows
 
@@ -27,24 +37,35 @@ La instalación inicial necesita acceso a npm si los paquetes aún no están en 
 
 Para ensayar desde la PC usa `npm.cmd run web`. Para revisar TypeScript usa `npm.cmd run typecheck`.
 
+### Android por USB
+
+Con Expo Go para SDK 57 instalado, activa la depuración USB y acepta el aviso del teléfono al conectarlo. Agrega a `PATH` de esa terminal la carpeta que contiene `adb.exe`. Desde la carpeta del proyecto, con un solo dispositivo conectado:
+
+```powershell
+adb devices
+adb reverse tcp:8081 tcp:8081
+.\node_modules\.bin\expo.cmd start --offline --localhost --port 8081
+```
+
+Comprueba que el teléfono figure como `device` y pulsa `a` en la terminal de Expo. Si ya tienes un emulador disponible, arráncalo antes de ejecutar Expo y usa la misma tecla para abrir el proyecto.
+
 ## Guion de demostración
 
-1. En **Inicio**, muestra los cuatro indicadores.
-2. En **Ganado**, filtra por seguimiento, busca a **Lucero** y abre su ficha.
-3. En **Sanidad**, completa el control posvacunación. El resumen baja de dos pendientes a uno.
-4. En **Producción**, abre **Registrar ordeño**, deja **Canela / Tarde** y prueba primero con cero para mostrar la validación. Guarda **8,5 L** y comprueba que el total sube de **44,5 a 53 L**.
-5. En **Jornadas**, marca la tarea del ordeño y comprueba que el avance pasa de **25 % a 50 %**. Vuelve a **Inicio** para ver los cambios reflejados.
+1. Intenta entrar con una clave incorrecta. Ejecuta recuperación e ingresa con la nueva clave.
+2. Desde **Usuarios**, intenta guardar un correo inválido y luego crea una cuenta de prueba. Cambia su rol o estado.
+3. Desde **Animales**, busca a **Canela**, abre su ficha y selecciona **Registrar ordeño**. El formulario abre con ese animal ya seleccionado.
+4. Intenta guardar **0 L**. Corrige a **8,5 L** y verifica que **Producción de leche** y **Panel** muestran **53 L** para el día.
+5. Cierra sesión y comprueba que el flujo regresa a **Iniciar sesión**.
 
 ## Organización del código
 
-- `src/app/` contiene las cinco rutas y la barra de navegación.
-- `src/components/` contiene los elementos compartidos entre vistas.
-- `src/services/` contiene los datos ficticios y el estado de la sesión de demostración. En el próximo trayecto será el punto de integración para la API.
-- `src/utils/` contiene la validación de litros y `src/theme.ts` define la paleta.
-- `assets/` contiene la ilustración y los iconos locales. Los PNG ya están incluidos.
+- `src/app/` contiene los grupos de rutas de acceso y de la aplicación.
+- `src/features/` organiza las pantallas, las reglas y los datos iniciales por módulo.
+- `src/components/` contiene controles compartidos, etiquetas, mensajes, estados vacíos y formularios desplazables.
+- `src/services/` mantiene el estado simulado. `src/theme.ts` define la paleta y `assets/` conserva los iconos locales.
 
 ## Verificación
 
-TypeScript y la exportación de Expo para Android, iOS y web pasaron. El recorrido funcional se probó en Chromium con tamaño de teléfono y las solicitudes externas bloqueadas. Queda pendiente escanear el QR y probar la app en teléfonos Android e iOS.
+`scripts/smoke-web.cjs` ejecuta los recorridos en Chromium sobre una exportación web local. Requiere Playwright disponible aparte. Las variables `SENAP_WEB_DIST`, `SENAP_PLAYWRIGHT` y `SENAP_CHROMIUM` permiten indicar la carpeta exportada, el módulo y el ejecutable de navegador en ese orden. La demostración en un teléfono conectado o emulador se comprueba aparte.
 
 Referencia de arranque y uso con dispositivos: [Expo](https://docs.expo.dev/get-started/start-developing/).

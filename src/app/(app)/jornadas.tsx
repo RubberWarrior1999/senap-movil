@@ -1,19 +1,21 @@
 import { useState } from 'react';
+import { useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { Card, Chips, Icon, Screen, SectionTitle, styles as ui } from '../components/ui';
-import { useDemo } from '../services/DemoProvider';
-import { color } from '../theme';
+import { Card, Chips, Icon, Screen, SectionTitle, styles as ui } from '../../components/ui';
+import { useDemo } from '../../services/DemoProvider';
+import { color } from '../../theme';
 
 const filters = ['Todas', 'Pendientes', 'Completadas'] as const;
 
 export default function WorkScreen() {
+  const router = useRouter();
   const { tasks, toggleTask } = useDemo();
   const [filter, setFilter] = useState<typeof filters[number]>('Todas');
   const done = tasks.filter(task => task.done).length;
   const progress = Math.round(done / tasks.length * 100);
   const visible = tasks.filter(task => filter === 'Todas' || task.done === (filter === 'Completadas'));
 
-  return <Screen title="Jornadas" intro="Consulta las tareas de campo y registra tu avance.">
+  return <Screen title="Jornadas" intro="Consulta las tareas de campo y registra tu avance." onBack={() => router.navigate('/')}>
     <View style={styles.summary}>
       <Text style={ui.subtle}>JORNADA DE DEMOSTRACIÓN</Text>
       <View style={styles.top}><Text style={ui.sectionTitle}>{done} de {tasks.length} listas</Text><Text style={ui.label}>{progress}%</Text></View>
@@ -40,13 +42,13 @@ export default function WorkScreen() {
 }
 
 const styles = StyleSheet.create({
-  summary: { padding: 16, gap: 10, backgroundColor: color.mint, borderRadius: 18, marginBottom: 14 },
+  summary: { padding: 16, gap: 10, backgroundColor: color.soft, borderRadius: 18, marginBottom: 14 },
   top: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   track: { height: 9, backgroundColor: color.surface, borderRadius: 6, overflow: 'hidden' },
-  fill: { height: '100%', backgroundColor: color.green, borderRadius: 6 },
+  fill: { height: '100%', backgroundColor: color.primary, borderRadius: 6 },
   list: { gap: 8 },
   row: { flexDirection: 'row', gap: 10, alignItems: 'center' },
-  check: { width: 29, height: 29, borderWidth: 1, borderColor: color.green, borderRadius: 9, alignItems: 'center', justifyContent: 'center' },
-  checkDone: { backgroundColor: color.green },
+  check: { width: 29, height: 29, borderWidth: 1, borderColor: color.primary, borderRadius: 9, alignItems: 'center', justifyContent: 'center' },
+  checkDone: { backgroundColor: color.primary },
   description: { flex: 1 },
 });
