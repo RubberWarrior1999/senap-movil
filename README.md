@@ -15,14 +15,14 @@ Prototipo de interfaz para Electiva III. Usa React Native, Expo SDK 57, Expo Rou
 
 Sanidad y Jornadas siguen accesibles desde el Dashboard. El tema azul y blanco aplica a todos los recorridos.
 
-Los datos, permisos y credenciales son ficticios. Se conservan en memoria al navegar y vuelven al estado inicial al recargar la app. La recuperación usa el código de demostración mostrado en pantalla. Todo el recorrido funciona sin XAMPP, base de datos, correo ni API.
+Las cuentas y los permisos están simulados. Los cambios se conservan en memoria al navegar y vuelven al estado inicial al recargar la app. Todo el recorrido funciona sin XAMPP, base de datos, correo ni API.
 
 | Cuenta de prueba | Usuario | Contraseña inicial |
 | --- | --- | --- |
 | Administradora | `admin.demo` | `SenapDemo21` |
 | Campo, con acceso limitado | `campo.demo` | `CampoDemo21` |
 
-Para recuperar la primera cuenta, usa `admin@senap.test` y el código ficticio `482615`.
+Para recuperar la primera cuenta, usa su correo asociado y el código ficticio `482615`. Por defecto, el correo es `admin@senap.test`. Puedes indicar otro en `EXPO_PUBLIC_DEMO_ADMIN_EMAIL` dentro de `.env.local` y recargar la app. El valor forma parte de la copia de demostración que sirve Expo.
 
 ## Arranque en Windows
 
@@ -33,7 +33,7 @@ npm.cmd ci
 npm.cmd start
 ```
 
-La instalación inicial necesita acceso a npm si los paquetes aún no están en caché. Una vez instalados, `npm.cmd start` ejecuta Expo en modo local con `--offline --lan`. Conecta el teléfono y la PC a la misma red, abre el QR en Expo Go compatible con SDK 57 y haz una prueba con el dispositivo antes de clase. El hotspot puede proporcionar esa red local sin conexión a Internet si permite el tráfico entre ambos dispositivos.
+La instalación inicial necesita acceso a npm si los paquetes aún no están en caché. Una vez instalados, `npm.cmd start` ejecuta Expo con `--offline`. Para la demostración por USB, sigue los pasos de la sección Android por USB.
 
 Para ensayar desde la PC usa `npm.cmd run web`. Para revisar TypeScript usa `npm.cmd run typecheck`.
 
@@ -44,7 +44,7 @@ Con Expo Go para SDK 57 instalado, activa la depuración USB y acepta el aviso d
 ```powershell
 adb devices
 adb reverse tcp:8081 tcp:8081
-.\node_modules\.bin\expo.cmd start --offline --localhost --port 8081
+.\node_modules\.bin\expo.cmd start --offline --port 8081
 ```
 
 Comprueba que el teléfono figure como `device` y pulsa `a` en la terminal de Expo. Si ya tienes un emulador disponible, arráncalo antes de ejecutar Expo y usa la misma tecla para abrir el proyecto.

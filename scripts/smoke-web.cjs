@@ -6,6 +6,7 @@ const path = require('node:path');
 const { chromium } = require(process.env.SENAP_PLAYWRIGHT || 'playwright');
 
 const dist = path.resolve(__dirname, '..', process.env.SENAP_WEB_DIST || 'dist');
+const adminEmail = process.env.EXPO_PUBLIC_DEMO_ADMIN_EMAIL?.trim().toLowerCase() || 'admin@senap.test';
 const preview = path.resolve(dist, 'qa');
 const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.png': 'image/png' };
 const server = http.createServer((request, response) => {
@@ -66,6 +67,9 @@ async function smoke() {
 
     await page.goto(url + '/usuarios/nuevo');
     await heading('Iniciar sesión');
+    for (const credential of ['Cuenta de demostración', 'admin.demo', 'SenapDemo21', adminEmail]) {
+      assert.equal(await page.getByText(credential, { exact: false }).filter({ visible: true }).count(), 0);
+    }
     await checkWidth();
     await shot('01-login');
     await field('Usuario').focus();
@@ -78,9 +82,10 @@ async function smoke() {
     await fill('Correo registrado', 'invalido');
     await button('Solicitar código').click();
     await shown('Introduce un correo válido.');
-    await fill('Correo registrado', 'admin@senap.test');
+    await fill('Correo registrado', adminEmail);
     await button('Solicitar código').click();
     await heading('Verificar código');
+    assert.equal(await page.getByText('482615').filter({ visible: true }).count(), 0);
     await fill('Código de verificación', '000000');
     await button('Verificar código').click();
     await shown('El código no es válido.');
@@ -99,6 +104,7 @@ async function smoke() {
     await shown('El usuario o la contraseña no son válidos.');
     await login('admin.demo', 'DemoCambio21');
     await heading('Panel principal');
+    await shown('Hola, Juan Sanchez.');
     await shown('44,5 L');
     await checkWidth();
     await shot('02-panel');
@@ -141,7 +147,7 @@ async function smoke() {
     await shown('Sin usuarios para esta búsqueda');
     await button('Todos').click();
     await fill('Buscar usuarios', 'admin.demo');
-    await button('Editar a Ana Rojas').click();
+    await button('Editar a Juan Sanchez').click();
     await button('Inactiva').click();
     await button('Guardar usuario').click();
     await shown('Debe quedar al menos un administrador activo.');

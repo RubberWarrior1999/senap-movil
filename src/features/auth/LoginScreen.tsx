@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import { Action, Card, Feedback, Field, Screen, styles as ui } from '../../components/ui';
 import { useDemo } from '../../services/DemoProvider';
-import { demoLogin } from '../usuarios/records';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -33,14 +32,6 @@ export default function LoginScreen() {
           {!!error && <Feedback error>{error}</Feedback>}
           <Action label="Entrar" onPress={submit} />
           <Action label="Olvidé mi contraseña" secondary onPress={() => router.push('/recuperar')} />
-        </View>
-      </Card>
-      <Card>
-        <View style={ui.grow}>
-          <Text style={ui.label}>Cuenta de demostración</Text>
-          <Text selectable style={ui.body}>Usuario: {demoLogin.username}</Text>
-          <Text selectable style={ui.body}>Contraseña inicial: {demoLogin.password}</Text>
-          <Text selectable style={ui.body}>Correo: {demoLogin.email}</Text>
         </View>
       </Card>
     </View>

@@ -13,11 +13,12 @@ export type UserDraft = Omit<User, 'id'> & { password: string };
 export type DemoAccount = User & { password: string };
 export type UserErrors = Partial<Record<'name' | 'username' | 'email' | 'password' | 'role' | 'form', string>>;
 
-export const demoLogin = { username: 'admin.demo', email: 'admin@senap.test', password: 'SenapDemo21' };
+const demoAdminEmail = process.env.EXPO_PUBLIC_DEMO_ADMIN_EMAIL?.trim().toLowerCase() || 'admin@senap.test';
+const demoLogin = { username: 'admin.demo', email: demoAdminEmail, password: 'SenapDemo21' };
 export const demoReader = { username: 'campo.demo', email: 'campo@senap.test', password: 'CampoDemo21' };
 
 export const initialUsers: DemoAccount[] = [
-  { id: 'u1', name: 'Ana Rojas', ...demoLogin, role: 'Administrador', active: true },
+  { id: 'u1', name: 'Juan Sanchez', ...demoLogin, role: 'Administrador', active: true },
   { id: 'u2', name: 'Luis Peña', ...demoReader, role: 'Usuario', active: true },
   { id: 'u3', name: 'María Torres', username: 'maria.demo', email: 'maria@senap.test', password: 'MariaDemo21', role: 'Moderador', active: false },
 ];

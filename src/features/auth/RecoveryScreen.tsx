@@ -112,8 +112,8 @@ export default function RecoveryScreen() {
         <Action label="Solicitar código" onPress={issue} disabled={pending} />
       </>}
       {step === 'code' && <>
-        <Text style={ui.body}>Para una cuenta activa, el código simulado es <Text style={ui.label}>{demoCode}</Text>.
-          Tiene 15 minutos de vigencia. Esta demostración no envía correo.</Text>
+        <Text style={ui.body}>Introduce el código de prueba. Tiene 15 minutos de vigencia.
+          La verificación es simulada.</Text>
         <Field label="Código de verificación" keyboardType="number-pad" maxLength={6} value={code}
           onChangeText={value => { setCode(value); setError(''); }} />
         {!!error && <Feedback error>{error}</Feedback>}
