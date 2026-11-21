@@ -1,6 +1,7 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { DemoProvider, useDemo } from '../services/DemoProvider';
+import { DemoProvider } from '../services/DemoProvider';
+import { useDemo } from '../hooks/useDemo';
 import { color } from '../theme';
 
 function Navigation() {

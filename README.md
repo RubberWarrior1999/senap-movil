@@ -64,10 +64,13 @@ Comprueba que el teléfono figure como `device` y pulsa `a` en la terminal de Ex
 
 ## Organización del código
 
-- `src/app/` contiene los grupos de rutas de acceso y de la aplicación.
-- `src/features/` organiza las pantallas, las reglas y los datos iniciales por módulo.
-- `src/components/` contiene controles compartidos, etiquetas, mensajes, estados vacíos y formularios desplazables.
-- `src/services/` mantiene el estado simulado. `src/theme.ts` define la paleta y `assets/` conserva los iconos locales.
+- `src/app/` define las rutas y la navegación de Expo Router. Cada página conecta el hook con su vista.
+- `src/hooks/` concentra la lógica de interacción, como el estado de los formularios, las búsquedas y el flujo de exportación.
+- `src/components/` agrupa las vistas por módulo y los controles compartidos, como campos, tarjetas y mensajes.
+- `src/features/` contiene las reglas, los datos iniciales y las utilidades de cada módulo. Los formularios reutilizados por las rutas de alta y edición también se conectan desde aquí.
+- `src/services/` contiene el contexto y el proveedor de la demostración. `src/theme.ts` define la paleta y `assets/` conserva los iconos locales.
+
+Para seguir Reportes en el código, abre `src/app/(app)/reportes.tsx`. La ruta conecta `src/hooks/useReports.ts` con `src/components/reportes/ReportsView.tsx`. Los totales y el detalle que recibe la vista se calculan en `src/features/reportes/reportData.ts`.
 
 ## Verificación
 

@@ -1,16 +1,9 @@
-import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
-import { Action, Badge, Card, EmptyState, Feedback, Screen, styles as ui } from '../../components/ui';
-import { useDemo } from '../../services/DemoProvider';
-import { eligibleForMilk } from './records';
+import { Action, Badge, Card, EmptyState, Feedback, Screen, styles as ui } from '../ui';
+import { eligibleForMilk } from '../../features/animales/records';
+import type { useAnimalDetail } from '../../hooks/useAnimalDetail';
 
-export default function AnimalDetailScreen() {
-  const router = useRouter();
-  const { id } = useLocalSearchParams<{ id: string }>();
-  const { animals, notice } = useDemo();
-  const animal = animals.find(item => item.id === id);
-  const back = () => router.dismissTo('/animales');
-
+export function AnimalDetailView({ animal, notice, back, edit, registerMilk }: ReturnType<typeof useAnimalDetail>) {
   if (!animal) return <Screen title="Ficha animal" onBack={back}><EmptyState title="Animal no encontrado" /></Screen>;
 
   const attributes = [
@@ -27,9 +20,9 @@ export default function AnimalDetailScreen() {
         </View>)}
         {!!animal.notes && <View><Text style={ui.label}>Observaciones</Text><Text style={ui.body}>{animal.notes}</Text></View>}
       </View></Card>
-      <Action label="Editar ficha" onPress={() => router.push({ pathname: '/animales/[id]/editar', params: { id: animal.id } })} />
+      <Action label="Editar ficha" onPress={() => edit(animal.id)} />
       {eligibleForMilk(animal) && <Action label="Registrar ordeño" icon="drop" secondary
-        onPress={() => router.push({ pathname: '/leche/registrar', params: { animalId: animal.id } })} />}
+        onPress={() => registerMilk(animal.id)} />}
     </View>
   </Screen>;
 }

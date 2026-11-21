@@ -1,23 +1,12 @@
-import { useRouter, type Href } from 'expo-router';
 import { Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
-import { Action, Badge, Card, Icon, Screen, SectionTitle, styles as ui, type IconName } from '../../components/ui';
-import { dateKey, litersLabel } from '../leche/records';
-import { useDemo } from '../../services/DemoProvider';
+import { Action, Badge, Card, Icon, Screen, SectionTitle, styles as ui } from '../ui';
 import { color } from '../../theme';
+import type { useDashboard } from '../../hooks/useDashboard';
 
-export default function DashboardScreen() {
-  const router = useRouter();
+export function DashboardView({
+  session, modules, pendingControls, completedTasks, totalTasks, openModule, signOut,
+}: ReturnType<typeof useDashboard>) {
   const { width, fontScale } = useWindowDimensions();
-  const { session, canManageUsers, signOut, users, animals, milk, health, tasks } = useDemo();
-  const todayMilk = milk.filter(item => item.date === dateKey());
-  const total = todayMilk.reduce((sum, item) => sum + item.liters, 0);
-  const activeAnimals = animals.filter(item => item.status === 'Activo').length;
-  const activeUsers = users.filter(item => item.active).length;
-  const modules: { name: string; detail: string; value: string; icon: IconName; href: Href; visible: boolean }[] = [
-    { name: 'Animales', detail: 'Activos en el inventario', value: String(activeAnimals), icon: 'herd', href: '/animales', visible: true },
-    { name: 'Producción de leche', detail: `${todayMilk.length} ordeños de hoy`, value: litersLabel(total) + ' L', icon: 'drop', href: '/leche', visible: true },
-    { name: 'Usuarios', detail: 'Cuentas activas', value: String(activeUsers), icon: 'task', href: '/usuarios', visible: canManageUsers },
-  ];
 
   return <Screen title="Panel principal" intro={session ? `Hola, ${session.name}.` : undefined}>
     <View style={styles.hero}>
@@ -29,9 +18,9 @@ export default function DashboardScreen() {
     </View>
     <SectionTitle>Vista general</SectionTitle>
     <View style={styles.grid}>
-      {modules.filter(module => module.visible).map(module => <Pressable key={module.name} accessibilityRole="button"
+      {modules.map(module => <Pressable key={module.name} accessibilityRole="button"
         accessibilityLabel={`Abrir ${module.name}`} accessibilityHint={`${module.value}, ${module.detail}`}
-        onPress={() => router.navigate(module.href)}
+        onPress={() => openModule(module.href)}
         style={({ pressed }) => [styles.tile, { flexBasis: width / fontScale >= 350 ? '46%' : '100%' }, pressed && ui.pressed]}>
         <View style={styles.tileTop}>
           <View style={styles.iconBox}><Icon name={module.icon} size={20} /></View>
@@ -45,10 +34,10 @@ export default function DashboardScreen() {
     <SectionTitle>Operación de la finca</SectionTitle>
     <View style={ui.list}>
       <Card><View style={ui.form}>
-        <Badge label={`${health.filter(item => !item.done).length} controles pendientes`} />
-        <Action label="Abrir Sanidad" secondary onPress={() => router.navigate('/sanidad')} />
-        <Badge label={`${tasks.filter(task => task.done).length} de ${tasks.length} tareas completas`} />
-        <Action label="Abrir Jornadas" secondary onPress={() => router.navigate('/jornadas')} />
+        <Badge label={`${pendingControls} controles pendientes`} />
+        <Action label="Abrir Sanidad" secondary onPress={() => openModule('/sanidad')} />
+        <Badge label={`${completedTasks} de ${totalTasks} tareas completas`} />
+        <Action label="Abrir Jornadas" secondary onPress={() => openModule('/jornadas')} />
       </View></Card>
       <Action label="Cerrar sesión" secondary onPress={signOut} />
     </View>

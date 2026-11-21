@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'expo-router';
-import { Text, View } from 'react-native';
-import { Action, Card, Feedback, Field, LoadingState, Screen, styles as ui } from '../../components/ui';
-import { useDemo } from '../../services/DemoProvider';
-import { validEmail } from '../usuarios/records';
+import { useDemo } from './useDemo';
+import { validEmail } from '../features/usuarios/records';
 
 const demoCode = '482615';
 const lifetimeMs = 15 * 60 * 1000;
@@ -12,7 +10,7 @@ type Challenge = { accountId?: string; expiresAt: number; failedAttempts: number
 type Step = 'email' | 'code' | 'password';
 const titles: Record<Step, string> = { email: 'Recuperar contraseña', code: 'Verificar código', password: 'Nueva contraseña' };
 
-export default function RecoveryScreen() {
+export function useRecovery() {
   const router = useRouter();
   const { recoveryAccount, resetPassword } = useDemo();
   const [step, setStep] = useState<Step>('email');
@@ -101,34 +99,14 @@ export default function RecoveryScreen() {
   const progress = { email: '1 de 3', code: '2 de 3', password: '3 de 3' }[step];
   const backToLogin = () => router.dismissTo('/login');
 
-  return <Screen title={titles[step]} intro={`Paso ${progress}`} onBack={backToLogin}>
-    <Card><View style={ui.form}>
-      {step === 'email' && <>
-        <Field label="Correo registrado" value={email} onChangeText={value => { setEmail(value); setError(''); }}
-          autoCapitalize="none" autoCorrect={false} keyboardType="email-address" autoComplete="email"
-          maxLength={254} editable={!pending} />
-        {pending && <LoadingState label="Preparando código de prueba…" />}
-        {!!error && <Feedback error>{error}</Feedback>}
-        <Action label="Solicitar código" onPress={issue} disabled={pending} />
-      </>}
-      {step === 'code' && <>
-        <Text style={ui.body}>Introduce el código de prueba. Tiene 15 minutos de vigencia.
-          La verificación es simulada.</Text>
-        <Field label="Código de verificación" keyboardType="number-pad" maxLength={6} value={code}
-          onChangeText={value => { setCode(value); setError(''); }} />
-        {!!error && <Feedback error>{error}</Feedback>}
-        <Action label="Verificar código" onPress={verify} />
-        <Action label="Solicitar un código nuevo" secondary onPress={restart} />
-      </>}
-      {step === 'password' && <>
-        <Field label="Nueva contraseña" secureTextEntry value={password}
-          onChangeText={value => { setPassword(value); setError(''); }} autoComplete="new-password" />
-        <Field label="Confirmar contraseña" secureTextEntry value={confirmation}
-          onChangeText={value => { setConfirmation(value); setError(''); }} autoComplete="new-password" />
-        {!!error && <Feedback error>{error}</Feedback>}
-        <Action label="Guardar contraseña" onPress={save} />
-        <Action label="Solicitar un código nuevo" secondary onPress={restart} />
-      </>}
-    </View></Card>
-  </Screen>;
+  function changeEmail(value: string) { setEmail(value); setError(''); }
+  function changeCode(value: string) { setCode(value); setError(''); }
+  function changePassword(value: string) { setPassword(value); setError(''); }
+  function changeConfirmation(value: string) { setConfirmation(value); setError(''); }
+
+  return {
+    step, title: titles[step], progress, email, code, password, confirmation, pending, error,
+    changeEmail, changeCode, changePassword, changeConfirmation, issue, restart, verify, save,
+    backToLogin,
+  };
 }

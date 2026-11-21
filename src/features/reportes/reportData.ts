@@ -1,10 +1,10 @@
 import { dateKey, litersLabel } from '../leche/records';
-import type { useDemo } from '../../services/DemoProvider';
+import type { DemoState } from '../../services/DemoContext';
 
 export const reportModules = ['Leche', 'Animales', 'Usuarios', 'Sanidad', 'Jornadas'] as const;
 
 export type ReportModule = typeof reportModules[number];
-type ReportSource = Pick<ReturnType<typeof useDemo>, 'milk' | 'animals' | 'users' | 'health' | 'tasks' | 'canManageUsers'>;
+type ReportSource = Pick<DemoState, 'milk' | 'animals' | 'users' | 'health' | 'tasks' | 'canManageUsers'>;
 
 export const reportFilters = {
   Leche: ['Hoy', 'Últimos 7 días', 'Todos'],

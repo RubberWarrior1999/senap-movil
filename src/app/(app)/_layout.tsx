@@ -2,7 +2,7 @@ import { Tabs } from 'expo-router';
 import { useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Icon, type IconName } from '../../components/ui';
-import { useDemo } from '../../services/DemoProvider';
+import { useDemo } from '../../hooks/useDemo';
 import { color } from '../../theme';
 
 const tabs = [
