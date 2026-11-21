@@ -10,6 +10,7 @@ const tabs = [
   { name: 'usuarios', title: 'Usuarios', icon: 'task' },
   { name: 'animales', title: 'Animales', icon: 'herd' },
   { name: 'leche', title: 'Leche', icon: 'drop' },
+  { name: 'reportes', title: 'Reportes', icon: 'task' },
 ] satisfies { name: string; title: string; icon: IconName }[];
 
 export default function MainLayout() {

@@ -221,6 +221,59 @@ async function smoke() {
     await selectTab('/');
     await heading('Panel principal');
     await shown('53 L');
+
+    await selectTab('/reportes');
+    await heading('Reportes');
+    await shown('53 L');
+    await button('Últimos 7 días').click();
+    await shown('64 L');
+    await button('Hoy').click();
+    await shown('53 L');
+    await checkWidth();
+    await shot('07-reportes');
+    const milkPreviewPromise = page.waitForEvent('popup');
+    await button('Exportar PDF').click();
+    const milkPreview = await milkPreviewPromise;
+    await milkPreview.getByRole('heading', { name: 'Producción de leche' }).waitFor();
+    assert.match(await milkPreview.locator('header').innerText(), /Filtro aplicado: Hoy/);
+    assert.equal(await milkPreview.locator('tbody tr').count(), 4);
+    assert.match(await milkPreview.locator('body').innerText(), /53 L/);
+    await milkPreview.pdf({
+      path: path.join(preview, 'reporte-leche.pdf'), preferCSSPageSize: true, printBackground: true,
+    });
+    await milkPreview.close();
+
+    await button('Animales').click();
+    await heading('Inventario de animales');
+    await button('Otros estados').click();
+    await shown('Brisa');
+    assert.equal(await page.getByText('Canela', { exact: true }).filter({ visible: true }).count(), 0);
+
+    await button('Usuarios').click();
+    await heading('Usuarios y roles');
+    await button('Inactivos').click();
+    await shown('María Torres');
+    const userPreviewPromise = page.waitForEvent('popup');
+    await button('Exportar PDF').click();
+    const userPreview = await userPreviewPromise;
+    await userPreview.getByRole('heading', { name: 'Usuarios y roles' }).waitFor();
+    const userReport = await userPreview.locator('body').innerText();
+    assert.match(userReport, /María Torres/);
+    assert.doesNotMatch(userReport, /@|SenapDemo21|admin\.demo/);
+    await userPreview.close();
+
+    await button('Sanidad').click();
+    await heading('Controles sanitarios');
+    await button('Pendientes').click();
+    await shown('Control posvacunación');
+    await button('Jornadas').click();
+    await heading('Tareas de la jornada');
+    await button('Completadas').click();
+    await shown('Revisar bebederos');
+    console.log('OK Reportes: cinco módulos, filtros, total actualizado y PDF sin credenciales.');
+
+    await selectTab('/');
+    await heading('Panel principal');
     await button('Abrir Producción de leche').click();
     await milking.click();
     await button('Eliminar registro').click();
@@ -253,6 +306,9 @@ async function smoke() {
     await login('campo.demo', 'CampoDemo21');
     await heading('Panel principal');
     assert.equal(await button('Abrir Usuarios').count(), 0);
+    await selectTab('/reportes');
+    await heading('Reportes');
+    assert.equal(await button('Usuarios').count(), 0);
     await page.reload();
     await heading('Iniciar sesión');
     assert.deepEqual(external, []);

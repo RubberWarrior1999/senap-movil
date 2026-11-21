@@ -12,6 +12,7 @@ Prototipo de interfaz para Electiva III. Usa React Native, Expo SDK 57, Expo Rou
 | Usuarios | Busca y filtra cuentas. Registra, edita y elimina con validaciones, roles, estados y confirmación dentro de la app. |
 | Animales | Busca por nombre, código, raza o lote. Filtra por estado y abre, crea o edita fichas. |
 | Producción de leche | Registra ordeños de hembras activas, consulta litros por animal y período, revisa el gráfico semanal y elimina con confirmación. |
+| Reportes | Resume Leche, Animales, Sanidad, Jornadas y, para el rol administrador, Usuarios. Permite filtrar y exportar el detalle a PDF. |
 
 Sanidad y Jornadas siguen accesibles desde el Dashboard. El tema azul y blanco aplica a todos los recorridos.
 
@@ -36,6 +37,10 @@ npm.cmd start
 La instalación inicial necesita acceso a npm si los paquetes aún no están en caché. Una vez instalados, `npm.cmd start` ejecuta Expo con `--offline`. Para la demostración por USB, sigue los pasos de la sección Android por USB.
 
 Para ensayar desde la PC usa `npm.cmd run web`. Para revisar TypeScript usa `npm.cmd run typecheck`.
+
+## Exportar reportes
+
+En **Reportes**, elige el módulo y el filtro. Los totales y el PDF reflejan los datos de la sesión actual. En Android o iOS, **Exportar PDF** genera el documento y abre las opciones de guardado o compartir del dispositivo. En el navegador, abre una vista de impresión y usa **Guardar como PDF** como destino. El reporte de Usuarios incluye nombres, roles y estados.
 
 ### Android por USB
 
